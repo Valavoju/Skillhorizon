@@ -1,0 +1,47 @@
+SkillHorizon/
+│── Backend/
+│   │── Database/
+│   │   │── __init__.py
+│   │   │── db_connection.py    # MongoDB Atlas connection
+│   │   │── skillhorizon.db      # Database schema/configuration
+│   │
+│   │── NLP/
+│   │   │── text_extraction.py   # Extracts text from resumes
+│   │   │── job_matching.py      # Compares resumes with job descriptions
+│   │   │── learning_path.py     # Uses Gemini API for learning recommendations
+│   │
+│   │── datasets/
+│   │   │── ai_job_descriptions.json   # AI job dataset for skill matching
+│   │   │── skills_taxonomy.json       # List of categorized skills
+│   │
+│   │── venv/ (Virtual Environment)
+│   │── app.py               # Main Flask application
+│   │── config.py            # Configuration settings
+│   │── models.py            # Database models (Resume, Jobs, Users)
+│   │── requirements.txt      # Dependencies
+│   │── routes.py             # API routes (for frontend integration)
+│   │── .env                  # Environment variables (MongoDB, API Keys)
+│
+│── frontend/
+│   │── node_modules/ (Dependencies)
+│   │── public/
+│   │   │── vite.svg
+│   │── src/
+│   │   │── assets/
+│   │   │── services/
+│   │   │   │── api.js        # API calls to backend
+│   │   │── components/       # React components
+│   │   │── pages/            # React pages (Home, Dashboard, Upload, Results)
+│   │   │── App.jsx
+│   │   │── index.css
+│   │   │── main.jsx
+│   │── .gitignore
+│   │── package.json
+│   │── vite.config.js
+│
+│── Docs/
+│   │── path.txt
+│   │── ppt_script.txt
+│── .gitignore
+│── README.md
+│── desktop.ini
