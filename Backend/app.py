@@ -9,7 +9,7 @@ CORS(app)  # Enable CORS for all routes
 def home():
     return "Welcome to Skill Horizon Backend!"
 
-@app.route("/add_user")
+@app.route("/add_user", methods=["POST"])
 def add_user():
     user_data = {"name": "Avinash", "email": "avinash@example.com"}
     db.users.insert_one(user_data)  # Insert into "users" collection
