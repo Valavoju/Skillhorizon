@@ -12,7 +12,7 @@ function App() {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        setData("⚠️ Failed to fetch data from backend!");
+        setData("⚠️ Failed to fetch data from backend");
       });
   }, []);
 
