@@ -1,5 +1,10 @@
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = "sqlite:///skillhorizon.db"
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    MONGO_URI = os.getenv("MONGO_URI")
+    JWT_SECRET = os.getenv("JWT_SECRET")
+    FLASK_ENV = os.getenv("FLASK_ENV")
