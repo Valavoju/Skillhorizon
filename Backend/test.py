@@ -2,25 +2,18 @@ import os
 import pymongo
 from dotenv import load_dotenv
 
-# Load environment variables
+# ✅ Load environment variables
 load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
 
 try:
     # ✅ Connect to MongoDB
     client = pymongo.MongoClient(MONGO_URI)
-    db = client["skillhorizon"]  # Database name
-    collection = db["users"]  # Collection name
+    db = client["skillhorizon"]
 
+    # ✅ Check connection
     print("✅ Successfully connected to MongoDB!")
-
-    # 📌 Fetch all user documents from the "users" collection
-    users = collection.find()  
-
-    # ✅ Print the retrieved documents
-    print("\n👥 Users Collection Data:")
-    for user in users:
-        print(user)  # Prints each user document
+    print("🗂️ Available Databases:", client.list_database_names())
 
 except Exception as e:
     print("❌ Error:", e)
