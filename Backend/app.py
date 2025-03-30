@@ -1,5 +1,9 @@
 from flask import Flask, jsonify, request
+<<<<<<< HEAD
 from flask_cors import CORS  
+=======
+from flask_cors import CORS
+>>>>>>> 8b02bab5ef5f0dae1c4e29fa8fc46128ef346ae7
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from pymongo import MongoClient
 import os
