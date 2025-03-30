@@ -1,17 +1,12 @@
 from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
 
-# Correct MongoDB connection string
-MONGO_URI = "mongodb://localhost:27017/"
+# Load environment variables
+load_dotenv()
 
-# Connect to MongoDB
+MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
-
-# Select the database (REMOVE ".db")
-db = client["skillhorizon"]  # ✅ Correct database name
-
-# Check connection
-try:
-    db.command("ping")
-    print("✅ Connected to MongoDB successfully!")
-except Exception as e:
-    print("❌ Failed to connect to MongoDB:", e)
+db = client["skillhorizon"]
+resume_collection = db["resumes"]
+job_collection = db["jobs"]

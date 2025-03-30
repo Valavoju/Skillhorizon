@@ -1,9 +1,9 @@
 from flask import Flask, jsonify, request
-<<<<<<< HEAD
+
 from flask_cors import CORS  
-=======
+
 from flask_cors import CORS
->>>>>>> 8b02bab5ef5f0dae1c4e29fa8fc46128ef346ae7
+
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from pymongo import MongoClient
 import os
@@ -72,6 +72,11 @@ def login():
 @jwt_required()
 def protected():
     return jsonify({"message": "This is a protected route!"})
+
+@app.route('/upload_resume', methods=['POST'])
+def upload_resume():
+    return jsonify({"message": "Resume uploaded successfully"})
+
 
 # Run Flask app
 if __name__ == "__main__":
