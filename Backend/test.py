@@ -1,19 +1,22 @@
-import os
-import pymongo
-from dotenv import load_dotenv
+import json
+from pymongo import MongoClient
 
-# ✅ Load environment variables
-load_dotenv()
-MONGO_URI = os.getenv("MONGO_URI")
+# MongoDB Connection
+MONGO_URI = "mongodb+srv://avinashvalavoju:avinash4334@cluster0.pbudvfx.mongodb.net/skillhorizon?retryWrites=true&w=majority"
+client = MongoClient(MONGO_URI)
 
-try:
-    # ✅ Connect to MongoDB
-    client = pymongo.MongoClient(MONGO_URI)
-    db = client["skillhorizon"]
+# Database and Collection
+db = client["skillhorizon"]
+collection = db["jobs"]
 
-    # ✅ Check connection
-    print("✅ Successfully connected to MongoDB!")
-    print("🗂️ Available Databases:", client.list_database_names())
+# Load JSON File
+with open("ai_job_description.json", "r", encoding="utf-8") as file:
+    jobs_data = json.load(file)
 
-except Exception as e:
-    print("❌ Error:", e)
+# Insert Data into MongoDB
+inserted_docs = collection.insert_many(jobs_data)
+
+print(f"{len(inserted_docs.inserted_ids)} job descriptions inserted successfully!")
+
+# Close Connection
+client.close()

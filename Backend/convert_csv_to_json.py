@@ -13,7 +13,7 @@ df.to_json(json_file, orient="records", indent=4)
 print(f"✅ CSV converted to JSON and saved as {json_file}")
 
 # 📌 STEP 3: Connect to MongoDB (Update with your MongoDB URI)
-MONGO_URI = "mongodb+srv://avinashvalavoju:Avin%40sh%23Db2025%21@skillhorizoncluster.a347m.mongodb.net/skillhorizon?retryWrites=true&w=majority&authMechanism=SCRAM-SHA-256"
+MONGO_URI = "mongodb+srv://avinashvalavoju:avinash4334@skillhorizoncluster.a347m.mongodb.net/skillhorizon?retryWrites=true&w=majority&authMechanism=SCRAM-SHA-256"
 
 client = MongoClient(MONGO_URI)
 db = client["skillhorizon"]  # Replace with your actual database name
