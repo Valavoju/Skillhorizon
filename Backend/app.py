@@ -1,13 +1,11 @@
 from flask import Flask, jsonify, request
-
-from flask_cors import CORS  
-
-from flask_cors import CORS
-
+from flask_cors import CORS 
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
+import PyPDF2  # Library to extract text from PDFs
+import docx  # Library to extract text from DOCX files
 
 # Load environment variables from .env
 load_dotenv()
@@ -73,10 +71,34 @@ def login():
 def protected():
     return jsonify({"message": "This is a protected route!"})
 
-@app.route('/upload_resume', methods=['POST'])
-def upload_resume():
-    return jsonify({"message": "Resume uploaded successfully"})
+# 🔹 Resume Upload and Extraction Route
+@app.route('/extract-text', methods=['POST'])
+def extract_text():
+    try:
+        if 'resume' not in request.files:
+            return jsonify({"error": "No file uploaded"}), 400
+        
+        file = request.files['resume']
+        file_ext = file.filename.split('.')[-1].lower()
 
+        if file_ext not in ['pdf', 'docx']:
+            return jsonify({"error": "Only PDF and DOCX files are supported"}), 400
+        
+        extracted_text = ""
+
+        if file_ext == 'pdf':
+            pdf_reader = PyPDF2.PdfReader(file)
+            for page in pdf_reader.pages:
+                extracted_text += page.extract_text() + "\n"
+        
+        elif file_ext == 'docx':
+            doc = docx.Document(file)
+            extracted_text = "\n".join([para.text for para in doc.paragraphs])
+
+        return jsonify({"message": "Text extracted successfully", "extractedText": extracted_text}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # Run Flask app
 if __name__ == "__main__":

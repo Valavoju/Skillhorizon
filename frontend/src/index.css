@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global styles */
+body {
+  @apply bg-gradient-to-r from-indigo-500 to-purple-700 text-white;
+}
+
+/* Hero Section */
+.hero-section {
+  @apply flex flex-col items-center justify-center min-h-screen text-center py-10;
+}
+
+.hero-section h1 {
+  @apply text-4xl font-bold;
+}
+
+.hero-section p {
+  @apply text-lg text-gray-300;
+}
+
+.cta-button {
+  @apply mt-4 px-6 py-2 bg-white text-black font-semibold rounded-full shadow-lg transition duration-300 hover:bg-gray-200;
+}
+
+/* 3D Canvas */
+.canvas {
+  @apply w-full h-[400px];
+}
+
+/* Sections */
+.about-section, .contact-section {
+  @apply w-full text-center py-20;
+}
+
+.about-section h2, .contact-section h2 {
+  @apply text-2xl font-semibold;
+}
+
+.about-section p, .contact-section p {
+  @apply text-gray-300 text-lg;
+}
+
+/* File Input */
+.file-input {
+  @apply px-4 py-2 bg-gray-200 text-black rounded-lg shadow-md;
+}
