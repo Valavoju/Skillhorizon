@@ -4,70 +4,80 @@
 
 /* 🌟 Global styles */
 body {
-  background-color: #121212;
+  @apply bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-700;
   color: white;
   font-family: 'Roboto', sans-serif;
   scroll-behavior: smooth;
-}
-
-/* 🌟 Header Styles */
-.header {
-  @apply flex justify-between items-center p-4 fixed w-full top-0 z-10 bg-gradient-to-r from-indigo-600 to-purple-700 text-white;
-}
-
-.header h1 {
-  @apply text-3xl font-semibold;
-}
-
-.header .nav-links {
-  @apply flex items-center gap-8;
-}
-
-.header .nav-links a {
-  @apply text-xl cursor-pointer transition-all duration-300;
-}
-
-.header .nav-links a:hover {
-  @apply text-yellow-400;
-}
-
-/* 🌟 Login, Signup Forms hidden initially */
-.form-container {
-  @apply fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75 z-20;
-  display: none;
-}
-
-.form-container.active {
+  height: 100vh;
+  margin: 0;
   display: flex;
+  flex-direction: column;
 }
 
-.form {
-  @apply w-96 p-8 bg-gradient-to-r from-indigo-500 to-purple-700 text-white rounded-xl shadow-lg transition-all duration-300;
+/* 🌟 Fixed Header Styles */
+.header {
+  @apply flex justify-between items-center px-8 py-4 fixed w-full top-0 z-20 bg-gradient-to-r from-indigo-700 to-purple-700 shadow-lg;
+  animation: fadeInDown 1s ease-in-out;
 }
 
-.form h2 {
-  @apply text-3xl font-semibold mb-4;
+/* 🌟 Login & Signup Cards */
+.login-card, .signup-card {
+  @apply bg-white p-6 rounded-lg shadow-xl w-96 text-black flex flex-col items-center justify-center;
+  animation: fadeIn 1s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
 }
 
-.form input {
-  @apply p-3 w-full mb-4 bg-white text-black rounded-lg shadow-lg;
+.login-card:hover, .signup-card:hover {
+  @apply shadow-2xl scale-105;
 }
 
-.form button {
-  @apply px-6 py-3 bg-gradient-to-r from-green-500 to-yellow-500 text-white font-semibold rounded-lg shadow-lg transition-all duration-300;
+.login-card input, .signup-card input {
+  @apply w-full p-3 my-2 border rounded-lg;
 }
 
-.form button:hover {
-  @apply bg-gradient-to-r from-yellow-500 to-green-500 scale-110;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+.login-card button, .signup-card button {
+  @apply w-full py-3 bg-blue-600 text-white rounded-lg font-semibold mt-4 transition-all duration-300;
 }
 
-/* 🌟 Other Styles */
-.upload-section {
-  @apply flex flex-col items-center justify-center py-10 w-2/3 mx-auto mt-10;
-  background: linear-gradient(135deg, rgba(0, 255, 255, 0.5), rgba(255, 0, 255, 0.5));
-  border-radius: 20px;
-  backdrop-filter: blur(8px);
-  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.5);
-  animation: fadeInUp 1.5s ease-out;
+.login-card button:hover, .signup-card button:hover {
+  @apply bg-blue-700;
+}
+
+/* 🌟 Animations */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
