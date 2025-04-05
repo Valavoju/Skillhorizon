@@ -20,33 +20,43 @@ body {
   animation: fadeInDown 1s ease-in-out;
 }
 
-/* 🌟 Login & Signup Cards */
-.login-card, .signup-card {
+/* 🌟 Center Auth Container Wrapper */
+.auth-wrapper {
+  @apply flex items-center justify-center min-h-screen;
+}
+
+/* 🌟 Auth Component Styles (Signup/Login) */
+.auth-container {
   @apply bg-white p-6 rounded-lg shadow-xl w-96 text-black flex flex-col items-center justify-center;
-  animation: fadeIn 1s ease-in-out;
+
   transition: all 0.3s ease-in-out;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  margin: auto;
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.9);
 }
 
-.login-card:hover, .signup-card:hover {
+.auth-container:hover {
   @apply shadow-2xl scale-105;
 }
 
-.login-card input, .signup-card input {
+.auth-form {
+  @apply w-full flex flex-col;
+}
+
+.auth-form input {
   @apply w-full p-3 my-2 border rounded-lg;
 }
 
-.login-card button, .signup-card button {
+.auth-form button {
   @apply w-full py-3 bg-blue-600 text-white rounded-lg font-semibold mt-4 transition-all duration-300;
 }
 
-.login-card button:hover, .signup-card button:hover {
+.auth-form button:hover {
   @apply bg-blue-700;
+}
+
+.switch-mode {
+  @apply text-blue-200 mt-4 cursor-pointer;
 }
 
 /* 🌟 Animations */

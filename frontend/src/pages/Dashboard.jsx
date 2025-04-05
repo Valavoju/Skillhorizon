@@ -1,30 +1,64 @@
 import React, { useState } from 'react';
-import '../index.css'; // Import custom styles
-import 'animate.css'; // Import animate.css for animations
+import { FaBars, FaUpload, FaChartBar, FaSearch, FaFileAlt } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const Dashboard = () => {
-  const [sidebarActive, setSidebarActive] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
-    setSidebarActive(!sidebarActive);
+    setSidebarOpen(!sidebarOpen);
   };
 
   return (
-    <div className="dashboard">
+    <div className="flex min-h-screen bg-gradient-to-br from-purple-700 via-indigo-700 to-purple-900 text-white">
+      
       {/* Sidebar */}
-      <div className={`sidebar ${sidebarActive ? 'active' : ''} animate__animated animate__slideInLeft`}>
-        <a href="#home" className="animate__animated animate__fadeIn animate__delay-1s">Home</a>
-        <a href="#services" className="animate__animated animate__fadeIn animate__delay-1.5s">Services</a>
-        <a href="#about" className="animate__animated animate__fadeIn animate__delay-2s">About</a>
-        <a href="#contact" className="animate__animated animate__fadeIn animate__delay-2.5s">Contact</a>
+      <div className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-white text-black transition-all duration-300 shadow-lg`}>
+        <div className="flex items-center justify-between p-4 border-b border-gray-300">
+          <h1 className="text-lg font-bold">
+            {sidebarOpen && 'Skill Horizon'}
+          </h1>
+          <button onClick={toggleSidebar} className="focus:outline-none">
+            <FaBars />
+          </button>
+        </div>
+        <nav className="p-4 flex flex-col gap-4">
+          <a href="#upload" className="flex items-center gap-2 hover:bg-indigo-100 p-2 rounded">
+            <FaUpload /> {sidebarOpen && 'Upload Resume'}
+          </a>
+          <a href="#score" className="flex items-center gap-2 hover:bg-indigo-100 p-2 rounded">
+            <FaChartBar /> {sidebarOpen && 'Score Match'}
+          </a>
+          <a href="#gap" className="flex items-center gap-2 hover:bg-indigo-100 p-2 rounded">
+            <FaSearch /> {sidebarOpen && 'Gap Analysis'}
+          </a>
+          <a href="#extract" className="flex items-center gap-2 hover:bg-indigo-100 p-2 rounded">
+            <FaFileAlt /> {sidebarOpen && 'Resume Extract'}
+          </a>
+        </nav>
       </div>
 
-      {/* Main content area */}
-      <div className="content">
-        <button onClick={toggleSidebar} className="sidebar-toggle-btn animate__animated animate__bounceIn">
-          ☰
-        </button>
-        <h1 className="animate__animated animate__fadeIn">Welcome to Skill Horizon Dashboard!</h1>
+      {/* Main Content */}
+      <div className="flex-1 p-8">
+        <motion.h1
+          className="text-4xl font-bold mb-6"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
+          Welcome to Skill Horizon Dashboard
+        </motion.h1>
+
+        <motion.p
+          className="text-lg text-white/90"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          Analyze, Match, and Build AI-powered Career Paths.
+        </motion.p>
+
+        {/* You can add your page components here like Upload.jsx, Score.jsx, etc. */}
       </div>
     </div>
   );

@@ -3,102 +3,80 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
-import os
-from dotenv import load_dotenv
 import PyPDF2
 import docx
 
-# Load environment variables from .env
-load_dotenv()
-
-# Initialize Flask app
+# 🔹 App Initialization
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
-# Configure MongoDB Atlas connection
-MONGO_URI = os.getenv("MONGO_URI")
+# ✅ Direct Mongo URI (since .env caused issues)
+MONGO_URI = "mongodb+srv://avinashvalavoju:avinash4334@cluster0.pbudvfx.mongodb.net/skillhorizon?retryWrites=true&w=majority"
+JWT_SECRET = "f1a3b9d6c8e4f5a7b1d9c0a8e3f4b6c7d9e2a1c5f7d0b3e8a9d4e6c2f8b1a7d3"
+app.config["JWT_SECRET_KEY"] = JWT_SECRET
+
+# 🔹 MongoDB Setup
 client = MongoClient(MONGO_URI)
-db = client.get_database()
+db = client["skillhorizon"]
+users_collection = db["users"]
+upload_collection = db["resumes"]
 
-# MongoDB Collections
-users_collection = db.users
-upload_collection = db.resumes
+# ✅ Check MongoDB connection
+try:
+    client.server_info()
+    print("✅ MongoDB connected successfully!")
+except Exception as e:
+    print("❌ MongoDB connection failed:", e)
 
-# Configure JWT Secret Key
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET")
+# 🔹 JWT Setup
 jwt = JWTManager(app)
 
+# 🔹 Routes
 @app.route("/")
 def home():
     return jsonify({"message": "Welcome to Skill Horizon Backend!"})
 
-# 🔹 Route to add a user (POST request)
-@app.route("/add_user", methods=["POST"])
-def add_user():
+@app.route("/signup", methods=["POST"])
+def sign_up():
     try:
-        user_data = request.get_json()
-        if not user_data or "name" not in user_data or "email" not in user_data:
-            return jsonify({"error": "Invalid input, name and email required"}), 400
+        data = request.get_json()
+        name = data.get("name")
+        email = data.get("email")
+        password = data.get("password")
 
-        db.users.insert_one(user_data)
-        return jsonify({"message": "User added successfully!"}), 201
+        if not name or not email or not password:
+            return jsonify({"error": "All fields required"}), 400
+
+        if users_collection.find_one({"email": email}):
+            return jsonify({"error": "User already exists"}), 400
+
+        hashed_password = generate_password_hash(password)
+        users_collection.insert_one({
+            "name": name, "email": email, "password": hashed_password
+        })
+
+        return jsonify({"message": "User registered successfully!"}), 201
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# 🔹 User Sign-Up Route
-@app.route("/sign_up", methods=["POST"])
-def sign_up():
-    data = request.get_json()
-    name = data.get("name")
-    email = data.get("email")
-    password = data.get("password")
-
-    if not name or not email or not password:
-        return jsonify({"error": "Name, email, and password are required"}), 400
-
-    # Check if user already exists
-    existing_user = users_collection.find_one({"email": email})
-    if existing_user:
-        return jsonify({"error": "User with this email already exists"}), 400
-
-    # Hash the password before storing it
-    hashed_password = generate_password_hash(password)
-
-    # Save user to database
-    user_data = {
-        "name": name,
-        "email": email,
-        "password": hashed_password
-    }
-    users_collection.insert_one(user_data)
-
-    return jsonify({"message": "User registered successfully!"}), 201
-
-# 🔹 User Login Route
 @app.route("/login", methods=["POST"])
 def login():
-    data = request.get_json()
-    email = data.get("email")
-    password = data.get("password")
+    try:
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
 
-    if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
+        user = users_collection.find_one({"email": email})
+        if not user or not check_password_hash(user["password"], password):
+            return jsonify({"error": "Invalid email or password"}), 401
 
-    # Fetch user from database
-    user = users_collection.find_one({"email": email})
-    if not user:
-        return jsonify({"error": "User not found"}), 404
+        token = create_access_token(identity=email)
+        return jsonify({"message": "Login successful", "access_token": token}), 200
 
-    # Check if password matches
-    if not check_password_hash(user["password"], password):
-        return jsonify({"error": "Invalid password"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    # Create JWT Token
-    access_token = create_access_token(identity=email)
-    return jsonify({"message": "Login successful", "access_token": access_token}), 200
-
-
-# 🔹 Protected Route (Requires JWT)
 @app.route("/protected", methods=["GET"])
 @jwt_required()
 def protected():
@@ -114,56 +92,46 @@ def upload():
         file_ext = file.filename.split(".")[-1].lower()
 
         if file_ext not in ["pdf", "docx"]:
-            return jsonify({"error": "Only PDF and DOCX files are allowed"}), 400
+            return jsonify({"error": "Only PDF and DOCX allowed"}), 400
 
         extracted_text = ""
-
-        # Extract text based on file type
         if file_ext == "pdf":
-            pdf_reader = PyPDF2.PdfReader(file)
-            for page in pdf_reader.pages:
+            reader = PyPDF2.PdfReader(file)
+            for page in reader.pages:
                 extracted_text += page.extract_text() + "\n"
-
         elif file_ext == "docx":
             doc = docx.Document(file)
             extracted_text = "\n".join([para.text for para in doc.paragraphs])
 
-        # Prepare data to be stored in MongoDB
-        upload_data = {
+        upload_collection.insert_one({
             "file_name": file.filename,
-            "content": extracted_text,
-        }
-
-        # Store extracted content and file name in MongoDB
-        upload_collection.insert_one(upload_data)
+            "content": extracted_text
+        })
 
         return jsonify({"message": "File uploaded and stored successfully!"}), 201
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# 🔹 Resume Upload and Extraction Route
-@app.route('/extract-text', methods=['POST'])
+@app.route("/extract-text", methods=["POST"])
 @jwt_required()
 def extract_text():
     try:
-        if 'resume' not in request.files:
+        if "resume" not in request.files:
             return jsonify({"error": "No file uploaded"}), 400
 
-        file = request.files['resume']
-        file_ext = file.filename.split('.')[-1].lower()
+        file = request.files["resume"]
+        file_ext = file.filename.split(".")[-1].lower()
 
-        if file_ext not in ['pdf', 'docx']:
-            return jsonify({"error": "Only PDF and DOCX files are supported"}), 400
+        if file_ext not in ["pdf", "docx"]:
+            return jsonify({"error": "Only PDF and DOCX supported"}), 400
 
         extracted_text = ""
-
-        if file_ext == 'pdf':
-            pdf_reader = PyPDF2.PdfReader(file)
-            for page in pdf_reader.pages:
+        if file_ext == "pdf":
+            reader = PyPDF2.PdfReader(file)
+            for page in reader.pages:
                 extracted_text += page.extract_text() + "\n"
-
-        elif file_ext == 'docx':
+        elif file_ext == "docx":
             doc = docx.Document(file)
             extracted_text = "\n".join([para.text for para in doc.paragraphs])
 
@@ -172,5 +140,6 @@ def extract_text():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# 🔹 Run App
 if __name__ == "__main__":
     app.run(debug=True)
