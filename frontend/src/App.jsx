@@ -7,6 +7,7 @@ import Upload from './pages/Upload';
 import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import Sidebar from './pages/Sidebar';
+import ScoreMatch from './components/ScoreMatch';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/auth" element={<Auth />} />
+        <Route path="/score-match" element={<ScoreMatch />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sidebar" element={<Sidebar />} />
       </Routes>

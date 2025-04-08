@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaBars, FaUpload, FaChartBar, FaSearch, FaFileAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import JobMatch from './JobMatch'; // Import JobMatch component
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -23,10 +24,10 @@ const Dashboard = () => {
           </button>
         </div>
         <nav className="p-4 flex flex-col gap-4">
-          <a href="#upload" className="flex items-center gap-2 hover:bg-indigo-100 p-2 rounded">
+          <a href="upload" className="flex items-center gap-2 hover:bg-indigo-100 p-2 rounded">
             <FaUpload /> {sidebarOpen && 'Upload Resume'}
           </a>
-          <a href="#score" className="flex items-center gap-2 hover:bg-indigo-100 p-2 rounded">
+          <a href="ScoreMatch" className="flex items-center gap-2 hover:bg-indigo-100 p-2 rounded">
             <FaChartBar /> {sidebarOpen && 'Score Match'}
           </a>
           <a href="#gap" className="flex items-center gap-2 hover:bg-indigo-100 p-2 rounded">
@@ -58,7 +59,8 @@ const Dashboard = () => {
           Analyze, Match, and Build AI-powered Career Paths.
         </motion.p>
 
-        {/* You can add your page components here like Upload.jsx, Score.jsx, etc. */}
+        {/* Add JobMatch component here to show job matching results */}
+        <JobMatch />
       </div>
     </div>
   );
